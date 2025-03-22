@@ -1,0 +1,109 @@
+CREATE TABLE Eventos (
+    id_evento INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    ubicacion VARCHAR(100),
+    estado ENUM('planificado', 'en curso', 'finalizado')
+);
+
+-- Tabla Inventario
+CREATE TABLE Inventario (
+    id_item INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    cantidad INT,
+    categoria ENUM('bebida', 'merchandising', 'equipo') NOT NULL,
+    id_evento INT,
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id_evento)
+);
+
+-- Tabla Bebidas
+CREATE TABLE Bebidas (
+    id_bebida INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    tipo ENUM('alcohólica', 'no alcohólica') NOT NULL,
+    volumen VARCHAR(20),
+    precio_venta DECIMAL(10, 2)
+);
+
+-- Tabla Merchandising
+CREATE TABLE Merchandising (
+    id_merch INT PRIMARY KEY AUTO_INCREMENT,
+    tipo VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    precio_venta DECIMAL(10, 2),
+    talla VARCHAR(10)
+);
+
+-- Tabla Equipamiento
+CREATE TABLE Equipamiento (
+    id_equipo INT PRIMARY KEY AUTO_INCREMENT,
+    tipo VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    cantidad INT
+);
+
+-- Tabla Servicios_Contratados
+CREATE TABLE Servicios_Contratados (
+    id_servicio INT PRIMARY KEY AUTO_INCREMENT,
+    id_evento INT,
+    tipo_servicio VARCHAR(50) NOT NULL,
+    proveedor VARCHAR(100),
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    costo DECIMAL(10, 2),
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id_evento)
+);
+
+-- Tabla Voluntarios
+CREATE TABLE Voluntarios (
+    id_voluntario INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    disponibilidad TEXT
+);
+
+-- Tabla Voluntarios_Eventos
+CREATE TABLE Voluntarios_Eventos (
+    id_voluntario_evento INT PRIMARY KEY AUTO_INCREMENT,
+    id_voluntario INT,
+    id_evento INT,
+    rol VARCHAR(50),
+    FOREIGN KEY (id_voluntario) REFERENCES Voluntarios(id_voluntario),
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id_evento)
+);
+
+-- Tabla Horarios_Voluntarios
+CREATE TABLE Horarios_Voluntarios (
+    id_horario INT PRIMARY KEY AUTO_INCREMENT,
+    id_evento INT,
+    id_voluntario INT,
+    fecha DATE,
+    hora_inicio TIME,
+    hora_fin TIME,
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id_evento),
+    FOREIGN KEY (id_voluntario) REFERENCES Voluntarios(id_voluntario)
+);
+
+-- Tabla Horarios_Eventos
+CREATE TABLE Horarios_Eventos (
+    id_horario_evento INT PRIMARY KEY AUTO_INCREMENT,
+    id_evento INT,
+    fecha DATE,
+    hora_inicio TIME,
+    hora_fin TIME,
+    descripcion TEXT,
+    FOREIGN KEY (id_evento) REFERENCES Eventos(id_evento)
+);
+
+ALTER TABLE Inventario
+ADD COLUMN id_bebida INT,
+ADD COLUMN id_merch INT,
+ADD COLUMN id_equipo INT,
+ADD FOREIGN KEY (id_bebida) REFERENCES Bebidas(id_bebida),
+ADD FOREIGN KEY (id_merch) REFERENCES Merchandising(id_merch),
+ADD FOREIGN KEY (id_equipo) REFERENCES Equipamiento(id_equipo);
